@@ -1,0 +1,167 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Compound Interest: Lump Sum
+{% endblock %}
+
+{% block main %}
+    <!-- calculator -->
+    <script>
+        function euro(num){
+            return num.toLocaleString("fr-FR",{style:'currency', currency:'EUR'})
+        }
+        var res = [['Year', 'Invested', 'Return']]
+        let principal = 0
+        let interestRate = 0
+        let interest = 0
+        let years = 0
+        let total = 0
+        function calculate() {
+            res = [['Year', 'Invested', 'Return']]
+            principal = document.getElementById("amount").value
+            interestRate = document.getElementById("rate").value / 100
+            years = document.getElementById("years").value
+
+            for (let year = 1; year <= years; year++) {
+                actual = principal*Math.pow((1+interestRate),year)
+                wo="Year " + year.toString()
+                res.push([wo, parseInt(principal), parseInt(actual)])
+            }
+            console.log(res)
+
+            document.getElementById("interests").innerHTML = euro(actual-principal)
+            document.getElementById("total").innerHTML = euro(actual)
+            
+            drawChart()
+        }
+        window.addEventListener("load", function() {
+                calculate();
+            });
+        
+        ///////////////////////////////////////////////PIECHART///////////////////////////////////////////////
+    </script>
+
+    <!-- PIE CHART -->
+    <script>
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+        
+        function drawChart(colors) {
+            let a=principal
+            let b=(actual-principal).toFixed(0)
+            var data = google.visualization.arrayToDataTable([
+            ['What', 'How much'],
+            ['Invested', parseInt(a)],
+            ['Return', parseInt(b)]
+            ]);
+
+            var options = {
+            backgroundColor: {fill:"transparent"},
+            pieSliceBorderColor : "transparent",
+            colors: ["#379683","#5cdb95"],
+            legend: {
+                textStyle: {
+                    color: '#ffffff',
+                    position: "labeled"
+                }},
+            pieSliceText: 'value-and-percentage',
+            height: 400,
+            width: 700
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+            chart.draw(data, options);
+        }
+        
+    </script>
+
+    <!-- CORE CHART -->
+    <script>
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+        function drawChart() {
+            var data = google.visualization.arrayToDataTable(res);
+
+            var options = {
+            curveType: 'function',
+            backgroundColor: {fill:"transparent"},
+            colors: ["#379683","#5cdb95","#ff0000"],
+            legend: {
+                textStyle: {
+                    color: '#ffffff',
+                }},
+            hAxis: {
+                baselineColor: "#fffffff5",
+                color:"#000000",
+                lineColor: "#ff0000f5"
+            },
+            vAxis:{
+                baselineColor: '#ff0000f5',
+                gridlineColor: '#ff0000f5',
+            },
+            crosshair: {orientation: 'vertical', trigger: 'focus'},
+            focusTarget:"category"
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+            chart.draw(data, options);
+        }
+	</script>
+
+    <div class="mb-3">
+        <h1>Compound interests: Lump Sum strategy</h1>
+        <h4 style="color: var(--two)">for lazy but alert people</h4>
+    </div>
+    
+    <div class="calcBig">
+        <div class="inputs-and-results">
+            <div class="calcBox">
+                <div class="input">
+                    <h5>Deposited amount</h5>
+                </div>
+                <div  class="input">
+                    <input class="myStyle" type="text" id="amount" value="100000" onkeyup="calculate()">
+                </div>
+                <div class="input">
+                    <h5>Expected return (%)</h5>
+                </div>
+                <div class="input">
+                    <input class="myStyle" type="text" id="rate" value="8" oninput="this.setCustomValidity('Please Enter valid email')" onkeyup="calculate()" required>
+                </div>
+                <div class="input">
+                    <h5>Years</h5>
+                </div>
+                <div>
+                    <input class="myStyle" type="text" id="years" value="25" onkeyup="calculate()">
+                </div>    
+            </div>
+            <div class="calcBox">
+                <div>
+                    <h5>Return</h5>
+                </div>
+                <div>
+                    <h5 id="interests"></h5>
+                </div>
+                <div>
+                    <h5>Total value</h5>
+                </div>
+                <div>
+                    <h5 id="total"></h5>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div id="piechart" style="width: 500px; height: 300px;"></div>
+            <div id="curve_chart" style="width: 600px; height: 230px; margin-top: 80px;"></div>
+        </div>
+    </div>
+    <div class="explanation">
+        <h3>Explanation</h3>
+        <h6>Compounding is a powerful tool in the world of finance.</h6>
+        <h6>It involves reinvesting earnings from an investment to generate even more earnings over time.</h6>
+        <h6>With a lump sum strategy, you invest a large amount of money upfront and let it grow through compounding.</h6>
+    </div>
+
+{% endblock %}

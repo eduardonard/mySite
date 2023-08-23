@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Easy Personal Finance
+{% endblock %}
+
+{% block main %}
+    <div class="mb-3">
+        <h1>Investing Calculators</h1>
+        <h4 style="color: var(--two)">for lazy but alert people</h4><br>
+        <h4 style="color: var(--two)">Here's a selection of investing calculators</h4>
+    </div>
+    <div class="cards">
+        <div class="card" onclick="location.href='/investing/compoundInterest/DCA'"><h4>Compound interest<br> DCA</h4>
+            <h5 class="info">You have a lot of money and wish to invest it in small amounts? Find out how much compound interest will help you.</h5>
+        </div>
+        <div class="card" onclick="location.href='/investing/compoundInterest/LumpSum'"><h4>Compound interest<br> Lump Sum</h4>
+            <h5 class="info">You have a lot of money and wish to invest it all at once? Find out how much compound interest will help you.</h5>
+        </div>
+        <div class="card" onclick="location.href='/investing/compoundInterest/PAC'"><h4>Compound interest<br> PAC</h4>
+            <h5 class="info">You want invest a monthly amount? Find out how much compound interest will help you.</h5>
+        </div>    
+    </div>
+
+{% endblock %}

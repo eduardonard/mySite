@@ -1,0 +1,180 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Loan calculator
+{% endblock %}
+
+{% block main %}
+    <!-- calculator -->
+    <script>
+        function euro(num){
+            return num.toLocaleString("fr-FR",{style:'currency', currency:'EUR'})
+        }
+        var res = [['Year', 'Total payed', 'Loaned']]
+        let principal = 0
+        let interestRate = 0
+        let interest = 0
+        let payments = 0
+        let total = 0
+        function calculate() {
+            res = [['Year', 'Total payed', 'Loaned']]
+            principal = document.getElementById("amount").value
+            interestRate = document.getElementById("rate").value / 100 / 12
+            payments = document.getElementById("years").value * 12
+
+            let x = Math.pow(1 + interestRate, payments);
+            let monthly = (principal * x * interestRate) / (x - 1);
+            total = monthly*payments
+            interest = total - principal
+
+            for (let year = 1; year <= payments / 12; year++) {
+                let loanedd = principal/payments*12*year
+                let power = Math.pow(1+interestRate,12*year)
+                let a = loanedd*((interestRate*power)/(power-1))*(year*12)
+                wo="Year "+year.toString()
+                res.push([wo, parseInt(a), parseInt(loanedd)])
+            }
+            console.log(res)
+            document.getElementById("payments").innerHTML = euro(monthly)
+            document.getElementById("interests").innerHTML = euro(interest)
+            document.getElementById("total").innerHTML = euro(total)
+            
+            drawChart()
+        }
+        window.addEventListener("load", function() {
+                calculate();
+            });
+        
+        ///////////////////////////////////////////////PIECHART///////////////////////////////////////////////
+    </script>
+
+    <!-- PIE CHART -->
+    <script>
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+        
+        function drawChart(colors) {
+            let a=principal
+            let b=interest.toFixed(0)
+            var data = google.visualization.arrayToDataTable([
+            ['What', 'How much'],
+            ['Loan', parseInt(a)],
+            ['Interests', parseInt(b)]
+            ]);
+
+            var options = {
+            backgroundColor: {fill:"transparent"},
+            pieSliceBorderColor : "transparent",
+            colors: ["#379683","#5cdb95"],
+            legend: {
+                textStyle: {
+                    color: '#ffffff',
+                    position: "labeled"
+                }},
+            pieSliceText: 'value-and-percentage',
+            height: 400,
+            width: 700
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+            chart.draw(data, options);
+        }
+        
+    </script>
+
+    <!-- CORE CHART -->
+    <script>
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart2);
+        function drawChart2() {
+            var data = google.visualization.arrayToDataTable(res);
+
+            var options = {
+            curveType: 'function',
+            backgroundColor: {fill:"transparent"},
+            colors: ["#379683","#5cdb95","#ff0000"],
+            legend: {
+                textStyle: {
+                    color: '#ffffff',
+                }},
+            hAxis: {
+                baselineColor: "#fffffff5",
+                color:"#000000",
+                lineColor: "#ff0000f5"
+            },
+            vAxis:{
+                baselineColor: '#ff0000f5',
+                gridlineColor: '#ff0000f5',
+            },
+            crosshair: {orientation: 'vertical', trigger: 'focus'},
+            focusTarget:"category"
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+            chart.draw(data, options);
+        }
+	</script>
+
+    <div class="mb-3">
+        <h1>Loan Calculator</h1>
+        <h4 style="color: var(--two)">for lazy but alert people</h4>
+    </div>
+    
+    <div class="calcBig">
+        <div class="inputs-and-results">
+            <div class="calcBox">
+                <div class="input">
+                    <h5>Loan amount</h5>
+                </div>
+                <div  class="input">
+                    <input class="myStyle" type="number" id="amount" value="100000" onkeyup="if(value<0) value=0;if(value>10000000) value='10000000';" required>
+                </div>
+                <div class="input">
+                    <h5>Interest rate (%)</h5>
+                </div>
+                <div class="input">
+                    <input class="myStyle" type="number" id="rate" value="3" onkeyup="if(value<0) value=0;if(value>10) value='10';calculate();" required>
+                </div>
+                <div class="input">
+                    <h5>Years</h5>
+                </div>
+                <div>
+                    <input class="myStyle" type="number" id="years" value="25" onkeyup="if(value<0) value=0;if(value>100) value='100';calculate();" required>
+                </div>    
+            </div>
+            <div class="calcBox">
+                <div>
+                    <h5>Monthly payments</h5>
+                </div>
+                <div>
+                    <h5 id="payments"></h5>
+                </div>
+                <div>
+                    <h5>Total interests</h5>
+                </div>
+                <div>
+                    <h5 id="interests"></h5>
+                </div>
+                <div>
+                    <h5>Total loaned</h5>
+                </div>
+                <div>
+                    <h5 id="total"></h5>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div id="piechart" style="width: 500px; height: 300px;"></div>
+            <div id="curve_chart" style="width: 600px; height: 230px; margin-top: 80px;"></div>
+        </div>
+    </div>
+    <div class="explanation">
+        <h3>Explanation</h3>
+        <h6>The cost of a loan is affected by several key factors, including the interest rate, loan term, and loan amount. </h6>
+        <h6>A higher interest rate, longer loan term, or larger loan amount will increase the overall cost of the loan. </h6>
+        <h6>It's important to carefully consider these factors when taking out a loan and to choose a loan with terms that are affordable and make sense for your financial situation.</h6>
+    </div>
+
+{% endblock %}

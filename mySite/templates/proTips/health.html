@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Easy Personal Finance
+{% endblock %}
+
+{% block main %}
+    <div class="mb-3">
+        <h1>Health Calculators</h1>
+        <h4 style="color: var(--two)">for lazy but alert people</h4><br>
+        <h4 style="color: var(--two)">Here's a selection of financial calculators, their aim is to highlight hidden costs and reduce them</h4>
+    </div>
+    <div class="cards">
+        <div class="card" onclick="location.href='/health/BMI'"><h4>BMI</h4>
+            <h5 class="info">Body mass index (BMI) is a measure of body fat based on height and weight that applies to adult men and women.</h5>
+        </div>
+    </div>
+
+{% endblock %}

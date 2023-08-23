@@ -1,0 +1,14 @@
+@import url(home.css);
+
+@import url(cards.css);
+
+@import url(financeCalculators.css);
+
+:root {
+    --one: #05386b;
+    --two: #379683;
+    --three: #5cdb95;
+    --four: #8EE4Af;
+    --five: #edf5e1;
+    --six: #ff0000f5;
+}
